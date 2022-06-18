@@ -1,0 +1,11 @@
+
+spring:
+  datasource:
+    password: akademia
+    username: akademia
+    url: jdbc:postgresql://localhost:5432/akademia
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8081
