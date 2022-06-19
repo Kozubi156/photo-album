@@ -1,28 +1,30 @@
 package com.photoalbum.service;
 
+import com.photoalbum.dto.PhotoDTO;
+import com.photoalbum.mapper.PhotoMapper;
 import com.photoalbum.model.*;
 import com.photoalbum.repository.PhotoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 
 @Service
 @AllArgsConstructor
 public class PhotoAlbumServiceImpl implements PhotoAlbumService {
 
     private final PhotoRepository photoRepository;
+    private final PhotoMapper photoMapper;
 
-    public Photo addPhoto(Photo photo) {
+    public Photo addPhoto(PhotoDTO photoDTO) {
+        Photo photo = photoMapper.map(photoDTO);
         UploadHistory uploadHistory = new UploadHistory();
         Tag tag = new Tag();
         Set<Tag> tags = new HashSet<>();
         Set<Photo> photos = new HashSet<>();
-        Set<Comment> comments = new HashSet<>();
-        Comment comment = new Comment();
         Album album = new Album();
         Location location = new Location();
 
@@ -35,9 +37,6 @@ public class PhotoAlbumServiceImpl implements PhotoAlbumService {
 
         album.setPhotos(photos);
         photo.setAlbum(album);
-
-        comment.setPhoto(photo);
-        photo.setComment(comments);
 
         photo.setLocation(location);
         location.setPhotos(photos);

@@ -1,8 +1,9 @@
 package com.photoalbum.service;
 
+import com.photoalbum.dto.PhotoDTO;
 import com.photoalbum.model.Photo;
 
 public interface PhotoAlbumService {
 
-    Photo addPhoto(Photo photo);
+    Photo addPhoto(PhotoDTO photoDTO);
 }

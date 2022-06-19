@@ -1,5 +1,6 @@
 package com.photoalbum.controller;
 
+import com.photoalbum.dto.PhotoDTO;
 import com.photoalbum.model.Photo;
 import com.photoalbum.service.PhotoAlbumServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class PhotoAlbumController {
     private final PhotoAlbumServiceImpl photoAlbumServiceImpl;
 
     @PostMapping("/photos")
-    public ResponseEntity<Photo> addPhoto(@RequestBody Photo photo){
-        this.photoAlbumServiceImpl.addPhoto(photo);
+    public ResponseEntity<Photo> addPhoto(@RequestBody PhotoDTO photoDTO){
+        this.photoAlbumServiceImpl.addPhoto(photoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
