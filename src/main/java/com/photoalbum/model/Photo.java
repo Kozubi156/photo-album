@@ -28,16 +28,16 @@ public class Photo {
     @OneToOne(mappedBy = "photo", cascade = CascadeType.ALL)
     private UploadHistory uploadHistory;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Album album;
 
-    @OneToMany(mappedBy = "photo")
+    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL)
     private Set<Comment> comment;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Tag> tag;
 }
 
