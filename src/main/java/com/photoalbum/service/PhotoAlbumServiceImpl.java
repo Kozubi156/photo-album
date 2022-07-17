@@ -1,7 +1,6 @@
 package com.photoalbum.service;
 
-import com.photoalbum.dto.PhotoCreationDTO;
-import com.photoalbum.mapper.PhotoMapper;
+import com.photoalbum.exception.PhotoException;
 import com.photoalbum.model.Location;
 import com.photoalbum.model.Photo;
 import com.photoalbum.model.Tag;
@@ -20,23 +19,18 @@ import java.util.Set;
 public class PhotoAlbumServiceImpl implements PhotoAlbumService {
 
     private final PhotoRepository photoRepository;
-    private final PhotoMapper photoMapper;
 
-    public Photo addPhoto(PhotoCreationDTO photoCreationDTO) {
-        Photo photo = photoMapper.map(photoCreationDTO);
+    public Photo addPhoto(Photo photo) {
         UploadHistory uploadHistory = new UploadHistory();
         Tag tag = new Tag();
         Set<Tag> tags = new HashSet<>();
         Set<Photo> photos = new HashSet<>();
         Location location = new Location();
-
         uploadHistory.setDate(new Date());
         uploadHistory.setPhoto(photo);
         photo.setUploadHistory(uploadHistory);
-
         tags.add(tag);
         photo.setTag(tags);
-
         photo.setLocation(location);
         location.setPhotos(photos);
 
@@ -44,8 +38,21 @@ public class PhotoAlbumServiceImpl implements PhotoAlbumService {
     }
 
     @Override
-    public Photo getPhotoById(Long id) {
+    public void updatePhoto(Long id, Photo photo) {
+        if (photoRepository.existsById(id)) {
+            Photo existingPhoto = photoRepository.findById(id).get();
+            existingPhoto.setAlbum(photo.getAlbum());
+            existingPhoto.setLocation(photo.getLocation());
+            existingPhoto.setTag(photo.getTag());
+            existingPhoto.setComment(photo.getComment());
+        } else {
+            throw new PhotoException("Photo with id: " + id + " not found");
+        }
+    }
 
+    @Override
+    public Photo getPhoto(Long id) {
+        return photoRepository.findById(id).orElseThrow();
     }
 
     @Override
