@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/photoalbum")
@@ -34,6 +35,12 @@ public class PhotoAlbumController {
     public ResponseEntity<Photo> getPhotoPhotoById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(photoAlbumServiceImpl.getPhoto(id));
     }
+
+    @GetMapping("/photos/")
+    public ResponseEntity<List<Photo>> getAllPhotos(){
+        return ResponseEntity.status(HttpStatus.OK).body(photoAlbumServiceImpl.getAllPhotos());
+    }
+
 
     @DeleteMapping ("/photos/{id}")
     public ResponseEntity<Void> deletePhoto(@PathVariable Long id){

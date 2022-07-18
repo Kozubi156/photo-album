@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -41,10 +42,17 @@ public class PhotoAlbumServiceImpl implements PhotoAlbumService {
     public void updatePhoto(Long id, Photo photo) {
         if (photoRepository.existsById(id)) {
             Photo existingPhoto = photoRepository.findById(id).get();
+            existingPhoto.setTitle(photo.getTitle());
+            existingPhoto.setDescription(photo.getDescription());
+            existingPhoto.setDescription(photo.getDescription());
+            existingPhoto.setUploaderEmail(photo.getUploaderEmail());
+            existingPhoto.setUploaderPhoneNumber(photo.getUploaderPhoneNumber());
+            existingPhoto.setUploaderAddress(photo.getUploaderAddress());
             existingPhoto.setAlbum(photo.getAlbum());
             existingPhoto.setLocation(photo.getLocation());
             existingPhoto.setTag(photo.getTag());
             existingPhoto.setComment(photo.getComment());
+            photoRepository.save(existingPhoto);
         } else {
             throw new PhotoException("Photo with id: " + id + " not found");
         }
@@ -52,11 +60,20 @@ public class PhotoAlbumServiceImpl implements PhotoAlbumService {
 
     @Override
     public Photo getPhoto(Long id) {
-        return photoRepository.findById(id).orElseThrow();
+        return photoRepository.findById(id).orElseThrow(() -> new PhotoException("Photo with ID: " + id + " not found"));
+    }
+
+    @Override
+    public List<Photo> getAllPhotos() {
+        return (List<Photo>) photoRepository.findAll();
     }
 
     @Override
     public void deletePhoto(Long id) {
-        photoRepository.deleteById(id);
+        if(photoRepository.findById(id).isPresent()){
+            photoRepository.deleteById(id);
+        } else  {
+            throw new PhotoException("Photo with ID: " + id + " not found");
+        }
     }
 }
