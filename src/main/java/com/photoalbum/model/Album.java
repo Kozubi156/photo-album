@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope = Album.class)
 public class Album {
@@ -22,6 +23,6 @@ public class Album {
     private String view;
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL)
-    private Set<Photo> photos;
+    private List<Photo> photos;
 
 }

@@ -8,10 +8,10 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Date;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id",scope = UploadHistory.class)
 public class UploadHistory {

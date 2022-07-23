@@ -1,11 +1,15 @@
 package com.photoalbum.service;
 
+import com.photoalbum.dto.PhotoDto;
 import com.photoalbum.exception.PhotoException;
+import com.photoalbum.mapper.PhotoMapper;
 import com.photoalbum.model.Location;
 import com.photoalbum.model.Photo;
 import com.photoalbum.model.Tag;
 import com.photoalbum.model.UploadHistory;
-import com.photoalbum.repository.PhotoRepository;
+import com.photoalbum.repository.JpaAlbumRepository;
+import com.photoalbum.repository.JpaPhotoRepository;
+import com.photoalbum.repository.JpaTagRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,29 +23,36 @@ import java.util.Set;
 @AllArgsConstructor
 public class PhotoAlbumServiceImpl implements PhotoAlbumService {
 
-    private final PhotoRepository photoRepository;
+    private final JpaPhotoRepository jpaPhotoRepository;
+    private final JpaTagRepository jpaTagRepository;
+    private final PhotoMapper photoMapper;
 
-    public Photo addPhoto(Photo photo) {
+    public void addPhoto(PhotoDto photoDTO) {
+        Photo photo = photoMapper.map(photoDTO);
         UploadHistory uploadHistory = new UploadHistory();
+
         Tag tag = new Tag();
         Set<Tag> tags = new HashSet<>();
         Set<Photo> photos = new HashSet<>();
         Location location = new Location();
+
         uploadHistory.setDate(new Date());
         uploadHistory.setPhoto(photo);
         photo.setUploadHistory(uploadHistory);
+
+        tag.setTitle(String.valueOf(photo.getTag()));
         tags.add(tag);
         photo.setTag(tags);
         photo.setLocation(location);
         location.setPhotos(photos);
 
-        return photoRepository.save(photo);
+        jpaPhotoRepository.save(photo);
     }
 
     @Override
     public void updatePhoto(Long id, Photo photo) {
-        if (photoRepository.existsById(id)) {
-            Photo existingPhoto = photoRepository.findById(id).get();
+        if (jpaPhotoRepository.existsById(id)) {
+            Photo existingPhoto = jpaPhotoRepository.findById(id).get();
             existingPhoto.setTitle(photo.getTitle());
             existingPhoto.setDescription(photo.getDescription());
             existingPhoto.setDescription(photo.getDescription());
@@ -52,7 +63,7 @@ public class PhotoAlbumServiceImpl implements PhotoAlbumService {
             existingPhoto.setLocation(photo.getLocation());
             existingPhoto.setTag(photo.getTag());
             existingPhoto.setComment(photo.getComment());
-            photoRepository.save(existingPhoto);
+            jpaPhotoRepository.save(existingPhoto);
         } else {
             throw new PhotoException("Photo with id: " + id + " not found");
         }
@@ -60,18 +71,18 @@ public class PhotoAlbumServiceImpl implements PhotoAlbumService {
 
     @Override
     public Photo getPhoto(Long id) {
-        return photoRepository.findById(id).orElseThrow(() -> new PhotoException("Photo with ID: " + id + " not found"));
+        return jpaPhotoRepository.findById(id).orElseThrow(() -> new PhotoException("Photo with ID: " + id + " not found"));
     }
 
     @Override
     public List<Photo> getAllPhotos() {
-        return (List<Photo>) photoRepository.findAll();
+        return (List<Photo>) jpaPhotoRepository.findAll();
     }
 
     @Override
     public void deletePhoto(Long id) {
-        if(photoRepository.findById(id).isPresent()){
-            photoRepository.deleteById(id);
+        if(jpaPhotoRepository.findById(id).isPresent()){
+            jpaPhotoRepository.deleteById(id);
         } else  {
             throw new PhotoException("Photo with ID: " + id + " not found");
         }
